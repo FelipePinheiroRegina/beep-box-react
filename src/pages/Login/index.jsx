@@ -3,7 +3,7 @@ import { Input } from "../../components/Input"
 import { Button } from "../../components/Button"
 import { useAuth } from "../../hooks/auth"
 import { useState } from "react"
-import { api } from "../../services/api"
+import image from '/img-exped.jpg'
 
 export function Login() {
     const [ name, setName ] = useState('')
@@ -50,7 +50,7 @@ export function Login() {
             </section>
 
             <div className="h-full hidden lg:block">
-                <img className="w-full h-full object-contain" src="../src/assets/img-exped.jpg" alt="sla" />
+                <img className="w-full h-full object-contain" src={image} alt="imagem de um caminhão de transportadora"/>
             </div>
         </main>
     )
