@@ -24,10 +24,6 @@ td, th {
     padding: 5px;
 }
 
-tr:nth-of-type(odd){
-    background-color: #c7d2fe;
-}
-
 /* Estilos para a barra de rolagem personalizada */
 ::-webkit-scrollbar {
 @apply w-2 h-2 rounded

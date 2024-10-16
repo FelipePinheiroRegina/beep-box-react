@@ -20,9 +20,11 @@ export function Login() {
     }
 
     return (
-        <main className="w-full  h-screen flex">
+        <main className="w-full  h-screen flex lg:grid lg:grid-cols-2">
 
-            <section className="w-80 m-auto flex flex-col gap-4">
+            <section className="w-80 m-auto flex flex-col gap-4
+                                lg:w-96 ">
+
                 <header className="flex items-center place-content-center gap-2">
                     <h1 className="text-3xl">Login</h1>
                     <BsFillDoorOpenFill size={30}/>
@@ -46,6 +48,10 @@ export function Login() {
                     <Button title="Entrar" onClick={handleLog}/>
                 </form>
             </section>
+
+            <div className="h-full hidden lg:block">
+                <img className="w-full h-full object-contain" src="../src/assets/img-exped.jpg" alt="sla" />
+            </div>
         </main>
     )
 }

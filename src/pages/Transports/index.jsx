@@ -9,8 +9,11 @@ import { api    } from "../../services/api"
 
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../../hooks/auth"
 
 export function Transports() {
+    const accessToken = localStorage.getItem('@patralbeep:accessToken')
+
     const [ filial, setFilial ] = useState('0101')
     const [ date, setDate ] = useState('')
     const [ transports, setTransports ] = useState([])
@@ -20,6 +23,8 @@ export function Transports() {
     useEffect(() => {
         async function handleChoseDateAndFilial() {
             try {
+                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
                 const response = await api.get(`/zWsTransport/get_list?company_id=${filial}&date_ref=${date}`)
 
                 setTransports(response.data.objects)
@@ -55,8 +60,13 @@ export function Transports() {
         <main className="w-full  h-screen flex">
             <Header/>
 
-            <form className="w-80 m-auto flex flex-col gap-4">
-               <p className="text-right text-xl"> Buscar por transportadoras</p>
+            <form 
+                className="w-80 m-auto flex flex-col gap-4
+
+                           lg:w-1/3                  
+                ">
+
+               <p className="text-right text-xl lg:text-3xl"> Buscar por transportadoras</p>
 
                <Select 
                     icon={BsFillBuildingsFill} 

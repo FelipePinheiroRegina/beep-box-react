@@ -1,5 +1,5 @@
-import axios from "axios"
+import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: "http://192.168.10.112:8401/rest"
-})
+  baseURL: "https://patralpecas173910.protheus.cloudtotvs.com.br:4050/rest"
+});

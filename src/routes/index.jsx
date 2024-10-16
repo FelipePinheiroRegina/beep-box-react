@@ -6,7 +6,7 @@ import { useAuth } from "../hooks/auth"
 
 export function Routes() {
     const { userName } = useAuth()
-
+    
     return (
         <BrowserRouter>
             { userName ? <RoutesApp/> : <RoutesAuth/> }

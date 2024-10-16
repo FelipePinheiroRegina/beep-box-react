@@ -1,32 +1,33 @@
-import { Html5Qrcode } from "html5-qrcode";
-import { BsArrowLeft, BsTrash3, BsSearch, BsFillBoxFill, BsQrCodeScan, BsXLg } from "react-icons/bs";
-import { Header } from "../../components/Header";
-import { ButtonText } from "../../components/ButtonText";
-import { ButtonAdd } from "../../components/ButtonAdd";
-import { Input } from "../../components/Input";
-import { useAuth } from "../../hooks/auth";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { api } from "../../services/api";
+import { Html5Qrcode } from "html5-qrcode"
+import { BsArrowLeft, BsTrash3, BsSearch, BsFillBoxFill, BsQrCodeScan, BsXLg } from "react-icons/bs"
+import { Header } from "../../components/Header"
+import { ButtonText } from "../../components/ButtonText"
+import { ButtonAdd } from "../../components/ButtonAdd"
+import { Input } from "../../components/Input"
+import { useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { api } from "../../services/api"
+import { useAuth } from "../../hooks/auth"
 
 export function TableTransport() {
-    const { userName } = useAuth();
-    const navigate = useNavigate();
-    const [addBox, setAddBox] = useState('');
-    const [orders, setOrders] = useState([]);
-    const [refresh, setRefresh] = useState(false);
-    const [watchAddBox, setWatchAddBox] = useState(false);
-    
+    const { userName } = useAuth()
+    const navigate = useNavigate()
+    const [addBox, setAddBox] = useState('')
+    const [orders, setOrders] = useState([])
+    const [refresh, setRefresh] = useState(false)
+    const [watchAddBox, setWatchAddBox] = useState(false)
 
-    const transportName = localStorage.getItem('@patralbeep:transportname');
-    const filial = localStorage.getItem('@patralbeep:filial');
-    const date = localStorage.getItem('@patralbeep:date');
-    const chosenTransport = localStorage.getItem('@patralbeep:chosentransport');
-    const accessToken = localStorage.getItem('@patralbeep:access_token');
-    const formattedDate = date.split('-').reverse().join('/');
+    const accessToken = localStorage.getItem('@patralbeep:accessToken')
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [html5QrCode, setHtml5QrCode] = useState(null);
+    const transportName = localStorage.getItem('@patralbeep:transportname')
+    const filial = localStorage.getItem('@patralbeep:filial')
+    const date = localStorage.getItem('@patralbeep:date')
+    const chosenTransport = localStorage.getItem('@patralbeep:chosentransport')
+   
+    const formattedDate = date.split('-').reverse().join('/')
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [html5QrCode, setHtml5QrCode] = useState(null)
 
     function handleBack() {
         navigate(-1);
@@ -56,7 +57,6 @@ export function TableTransport() {
     
         const idOrder = updatedAddBox.slice(0, 6)
         const box = Number(updatedAddBox.slice(7))
-        console.log(updatedAddBox)
         const order = orders.find(order => order.sale_id == idOrder);
     
         if (!order) {
@@ -70,12 +70,15 @@ export function TableTransport() {
         }
     
         try {
+            api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
             await api.post(`/zWsTransport/new_check?company_id=${filial}&id=${updatedAddBox}&user_login=${userName}`);
             setRefresh(prev => !prev);
             triggerWatchAddBox();
             setAddBox('')
         } catch (error) {
             setAddBox('')
+            
             return alert(error.response.data.error);
         }
     }
@@ -92,9 +95,12 @@ export function TableTransport() {
         }
 
         try {
+            api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
             await api.delete(`/zWsTransport/delete_checks?company_id=${filial}&id=${id}`);
             setRefresh(prev => !prev);
         } catch (error) {
+       
             return alert(error.response.data.error);
         }
     }
@@ -149,10 +155,13 @@ export function TableTransport() {
     useEffect(() => {
         async function fetchOrders() {
             try {
-                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`
+
                 const response = await api.get(`/zWsTransport/get_sales?company_id=${filial}&date_ref=${date}&id=${chosenTransport}`);
-                setOrders(response.data.objects);
+                setOrders(response.data.objects)
+                
             } catch (error) {
+              
                 return alert(error);
             }
         }
@@ -161,24 +170,24 @@ export function TableTransport() {
     }, [refresh]);
 
     return (
-        <main className="w-full mt-24">
+        <main className="w-full mt-24 lg:mt-40">
             <Header />
 
             {isModalOpen && (
-                <div className="absolute inset-0 bg-gray-600 bg-opacity-50 ">
+                <div className="absolute inset-0 bg-gray-600 bg-opacity-50">
                     <div style={{ width: "320px" }} id="reader" className="z-10 m-auto"></div>    
                 </div>
             )}
 
-            <section className="w-80 m-auto">
+            <section className="w-80 m-auto lg:w-1/3 ">
                 <div className="flex justify-between mb-3">
-                    <h1 className="text-slate-500">Transportadora</h1>
-                    <ButtonText icon={BsArrowLeft} onClick={handleBack} />
+                    <h1 className="text-slate-500 lg:text-xl">Transportadora</h1>
+                    <ButtonText icon={BsArrowLeft} onClick={handleBack} className="lg:text-3xl"/>
                 </div>
-                <p className="pl-4 text-lg">{transportName}</p>
-                <p className="pl-4 mb-5 text-lg border-b-2 border-indigo-200">{formattedDate}</p>
-                <div className="overflow-auto h-64 mb-2">
-                    <table className="w-full text-left ">
+                <p className="pl-4 text-lg lg:text-2xl">{transportName}</p>
+                <p className="pl-4 mb-5 text-lg border-b-2 border-indigo-200 lg:text-2xl">{formattedDate}</p>
+                <div className="overflow-auto h-64 mb-2 lg:h-96">
+                    <table className="w-full text-left lg:text-xl">
                         <thead>
                             <tr>
                                 <th></th>
@@ -189,37 +198,45 @@ export function TableTransport() {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders && orders.map((order, index) => (
-                                <tr key={String(index)}>
-                                    <td
-                                        className="cursor-pointer"
-                                        onClick={() =>
-                                            handleNavigateTableBoxesAlreadyBeep(
-                                                order.sale_id,
-                                                order.customer_name,
-                                                order.box_qty_checked
-                                            )}
-                                    >
-                                        <BsSearch />
-                                    </td>
+                            {orders && orders.map((order, index) => {
+                                const isOdd = index % 2 !== 1;
+                                const isConditionMet = order.box_qty === order.box_qty_checked;
 
-                                    <td>{order.sale_id}</td>
-                                    <td>{order.box_qty}</td>
-                                    <td>{order.box_qty_checked}</td>
-
-                                    <td
-                                        className="cursor-pointer"
-                                        onClick={() => handleDeleteBox(order.sale_id, order.box_qty_checked)}
+                                return (
+                                    <tr 
+                                        key={String(index)} 
+                                        className={isConditionMet ? "bg-green-400" : (isOdd ? "bg-indigo-200" : "bg-stone-50")}
                                     >
-                                        <BsTrash3 />
-                                    </td>
-                                </tr>
-                            ))}
+                                        <td
+                                            className="cursor-pointer"
+                                            onClick={() =>
+                                                handleNavigateTableBoxesAlreadyBeep(
+                                                    order.sale_id,
+                                                    order.customer_name,
+                                                    order.box_qty_checked
+                                                )}
+                                        >
+                                            <BsSearch />
+                                        </td>
+
+                                        <td>{order.sale_id}</td>
+                                        <td>{order.box_qty}</td>
+                                        <td>{order.box_qty_checked}</td>
+
+                                        <td
+                                            className="cursor-pointer"
+                                            onClick={() => handleDeleteBox(order.sale_id, order.box_qty_checked)}
+                                        >
+                                            <BsTrash3 />
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
-                <div className="flex flex-col gap-2">
-                    <div className="flex max-w-max self-end gap-4">
+                <div className="flex flex-col gap-2 lg:mt-10">
+                    <div className="flex max-w-max self-end gap-4 lg:hidden">
                         <ButtonText className="z-10" icon={BsXLg} onClick={handleClose}/>
                         <ButtonText icon={BsQrCodeScan} onClick={handleOpen}/>
                     </div>
